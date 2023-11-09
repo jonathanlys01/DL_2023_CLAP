@@ -29,7 +29,7 @@ processor = ClapProcessor.from_pretrained("laion/clap-htsat-unfused")
 print(f"Model loaded in {time.time() - start:.2f} seconds")
 
 preds = []
-limit = 200
+limit = len(esc_50.audios) # no limit
 texts = esc_50.classes
 inputs_text = processor(text=texts, return_tensors="pt", padding=True)
 
@@ -90,7 +90,7 @@ for i in range(len(preds)):
     col = np.where(all_classes == esc_50.annotations[i])[0][0]
     confusion_matrix[row, col] += 1
     
-plt.figure(figsize=(10, 10))
+plt.figure(figsize=(12, 12))
 plt.imshow(confusion_matrix, cmap="Blues", interpolation="nearest")
 plt.xticks(np.arange(len(all_classes)), all_classes, rotation=90)
 plt.yticks(np.arange(len(all_classes)), all_classes)
@@ -107,7 +107,7 @@ end = time.time()
 import datetime
 
 elapsed = str(datetime.timedelta(seconds=(end - start))) # convert time to hh:mm:ss.nnnnnn format
-elapsed.split(".")[0] # remove microseconds
+elapsed = elapsed.split(".")[0] # remove microseconds
 if elapsed.startswith("0:"):
     elapsed = elapsed[2:] # remove leading 0:
 

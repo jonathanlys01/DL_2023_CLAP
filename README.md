@@ -18,6 +18,6 @@ Image of the last audio processed by the model.
 
 We also tried to augment the labels of the ESC-50 dataset, by turning words into full sentences. For example, the label ```dog``` becomes ```A dog is barking```. The idea is to give more context to the model, and to make it learn more about the meaning of the sounds.
 
-<img src="confusion_matrix.png" width="100%" alt="Confusion matrix">
+<img src="confusion_matrix_new.png" width="100%" alt="Confusion matrix">
 
 We gained more than 10% of accuracy, and the confusion matrix looks better.

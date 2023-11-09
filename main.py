@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from tqdm import tqdm
+from augmentations import augmentations # dict with augmented text labels
 
 parser = argparse.ArgumentParser()
 
@@ -30,7 +31,9 @@ print(f"Model loaded in {time.time() - start:.2f} seconds")
 
 preds = []
 limit = len(esc_50.audios) # no limit
-texts = esc_50.classes
+labels = esc_50.classes
+assert labels == list(augmentations.keys()), "Labels do not match"
+texts = [augmentations[label] for label in labels]
 inputs_text = processor(text=texts, return_tensors="pt", padding=True)
 
 for key, value in inputs_text.items():
@@ -52,7 +55,7 @@ for ind in pbar:
     plt.title(f"Audio: {plot_name} / Label: {label}")
     if args.plot:
         plt.savefig(f"temp/audio_{plot_name}.png")
-    plt.savefig(f"last_audio.png")
+        plt.savefig(f"last_audio.png")
     plt.close()
 
     inputs_audio = processor(audios=audio, sampling_rate=sr, return_tensors="pt")

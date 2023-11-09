@@ -56,12 +56,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dataset = ESC_50(args.path_to_audio, args.path_to_annotation)
-
-    print(len(dataset))
-
-    print(dataset[0])
-
-    y, sr = dataset.open_audio(dataset[0]["audio"])
-    print(y.shape, sr)
-
+    
     print(dataset.classes)

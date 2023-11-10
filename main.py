@@ -16,6 +16,8 @@ parser.add_argument("--plot", "-p", action=argparse.BooleanOptionalAction, defau
 args = parser.parse_args()
 
 print()
+
+print("Loading dataset...")
 esc_50 = ESC_50(args.path_to_audio, args.path_to_annotation)
 
 start = time.time()

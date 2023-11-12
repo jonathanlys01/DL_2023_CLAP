@@ -165,7 +165,7 @@ if args.plot in ["all", "cm"]:
     plt.tight_layout()
     plt.title(f"Confusion matrix (Accuracy: {acc:.2f}%)")
     
-    plt.savefig("last_confusion_matrix.png")
+    plt.savefig(f"last_confusion_matrix_{ds_type.lower()}.png")
     import datetime
     date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     plt.savefig(f"temp/confusion_matrix_{date}.png")

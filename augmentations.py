@@ -1,9 +1,9 @@
 """
 We augment the text labels by turning words into sentences.
-This is done with GitHub Copilot.
+This is done using GitHub Copilot.
 """
 
-augmentations = {
+augmentations_esc = {
     "airplane": "An airplane is flying in the sky",
     "breathing": "A person is breathing heavily",
     "brushing_teeth": "A person is brushing his teeth",
@@ -54,5 +54,35 @@ augmentations = {
     "washing_machine": "A washing machine is running",
     "water_drops": "Water is dripping",
     "wind": "The wind is blowing",
+}
+
+augmentations_urbansound = {
+    "air_conditioner": "The fan and motor of an air conditioner are running",
+    "car_horn": "A car horn is honking",
+    "children_playing": "Children are playing, laughing and shouting",
+    "dog_bark": "A dog is barking",
+    "drilling": "A person is drilling into a wall with an electric drill",
+    "engine_idling": "An engine is idling",
+    "gun_shot": "A gun is being shot",
+    "jackhammer": "A jackhammer is drilling into the ground",
+    "siren": "An emergency siren is wailing",
+    "street_music": "Music is playing in the street",
+}
+
+augmentations_fma = {
+    "Electronic": "A person is singing over electronic sounds",
+    "Experimental": "Experimental music is playing",
+    "Folk": "A person is singing over folk music",
+    "Hip-Hop": "A person is rapping over a Hip-Hop beat",
+    "Instrumental": "Instrumental music with no vocals is playing",
+    "International": "A peron is singing in a foreign language",
+    "Pop": "A person is singing over a Pop and happy beat",
+    "Rock": "A person is singing over elctric guitar sounds and drums",
+}
+
+augmentations = {
+    "ESC-50": augmentations_esc,
+    "UrbanSound8K": augmentations_urbansound,
+    "FMA": augmentations_fma,
 }
 

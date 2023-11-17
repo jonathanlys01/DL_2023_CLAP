@@ -75,14 +75,25 @@ augmentations_fma = {
     "Folk": "A person is singing over folk music",
     "Hip-Hop": "A person is rapping over a Hip-Hop beat",
     "Instrumental": "Instrumental music with no vocals is playing",
-    "International": "A peron is singing in a foreign language",
+    "International": "A person is singing in a foreign language",
     "Pop": "A person is singing over a Pop and happy beat",
     "Rock": "A person is singing over elctric guitar sounds and drums",
+}
+
+augmentations_fma_chatgpt = {
+    "Electronic": "Electronic beats pulse through the air, creating a futuristic vibe.",
+    "Experimental": "Unconventional sounds blend together in an experimental musical journey.",
+    "Folk": "Soothing acoustic melodies accompany heartfelt lyrics in this folk ballad.",
+    "Hip-Hop": "Sharp rhymes flow seamlessly over a rhythmic Hip-Hop beat.",
+    "Instrumental": "A symphony of instruments weaves an intricate tapestry without vocals.",
+    "International": "Exotic languages intertwine with melodies, transporting you to distant lands.",
+    "Pop": "Upbeat and energetic, a charismatic voice leads a lively pop melody that's impossible not to dance to.",
+    "Rock": "Electric guitars wail, drums thunder, as a powerful voice commands attention in a rock anthem.",
 }
 
 augmentations = {
     "ESC-50": augmentations_esc,
     "UrbanSound8K": augmentations_urbansound,
-    "FMA": augmentations_fma,
+    "FMA": augmentations_fma # augmentations_fma_chatgpt # 
 }
 

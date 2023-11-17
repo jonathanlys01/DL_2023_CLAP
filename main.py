@@ -11,18 +11,19 @@ from augmentations import augmentations
 parser = argparse.ArgumentParser()
 
 help = "Dataset type, one of ESC-50, FMA, UrbanSound8K (short names: e, f, u)"
-parser.add_argument("--dataset_type", "-d", type=str, required=True, help=help)
+parser.add_argument("--dataset", "-d", type=str, required=True, help=help)
 parser.add_argument("--limit", "-l", type=int, default=-1, help="Limit number of samples")
 parser.add_argument("--plot", "-p", choices=["no", "cm", "audio", "all"], 
                     default="no", help="Plot confusion matrix, audio, or both, default no")
 parser.add_argument("--model", "-m", type=str, 
                     choices=["music", "general", "default"], default="default", 
                     help="Model type, default will choose the best model for the dataset")
+parser.add_argument("--topk", "-k", type=int, default=1, help="Top k predictions")
 parser.add_argument("--verbose", "-v", action=argparse.BooleanOptionalAction, default=False, 
                     help="Verbose mode")
 args = parser.parse_args()
 
-ds_type = args.dataset_type
+ds_type = args.dataset
 root = "downloads/"
 
 if ds_type.lower() in ["esc-50", "esc50", "esc","e"]:
@@ -95,18 +96,24 @@ if args.verbose:
 else:
     pbar = tqdm(range(min(limit, len(dataset.audios))))
 
+cosine_sim = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
+
 for ind in pbar:
     filename = dataset.audios[ind]
     label = dataset.annotations[ind]
 
-    audio, sr = dataset.open_audio(filename, sr=48000)
+    try:
+        audio, sr = dataset.open_audio(filename, sr=48000)
+    except:
+        print(f"Error opening {filename}")
+        continue
 
     if args.plot in ["all", "audio"]:
         plt.plot(audio)
         plot_name = filename.split("/")[-1].split(".")[0]
         plt.title(f"Audio: {plot_name} / Label: {label}")
         plt.savefig(f"temp/audio_{plot_name}.png")
-        plt.savefig(f"last_audio.png")
+        plt.savefig(f"figs/last_audio.png")
         plt.close()
 
     inputs_audio = processor(audios=audio, sampling_rate=sr, return_tensors="pt", padding=True)
@@ -117,23 +124,27 @@ for ind in pbar:
     with torch.inference_mode():
         outputs_audio = model.get_audio_features(**inputs_audio)
 
-    cosine_sim = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
 
     sim = cosine_sim(outputs_text, outputs_audio)
 
-    pred_index = torch.argmax(sim).item()
-    
+    pred_index_list = torch.argsort(sim, descending=True)[:args.topk].cpu().numpy()
+
+    if any([dataset.classes[pred_index] == label for pred_index in pred_index_list]):
+        pred_index = dataset.classes.index(label)
+    else:
+        pred_index = pred_index_list[0] # argmax if no match
+
     preds.append(dataset.classes[pred_index])
     
     acc = 100 * np.mean(np.array(preds) == np.array(dataset.annotations[:len(preds)]))
     
     if args.verbose:
         print(f"True: {label}, Predicted: {dataset.classes[pred_index]}")
-        print(f"Accuracy: {acc:.2f}%")
+        print(f"Top {args.topk} Accuracy: {acc:.2f}%")
     else:
-        pbar.set_description(f"Accuracy: {acc:.2f}%")
+        pbar.set_description(f"Top {args.topk} accuracy: {acc:.2f}%")
     
-print(f"Final accuracy: {acc:.2f}")
+print(f"Final top {args.topk} accuracy: {acc:.2f}")
 
 if args.plot in ["all", "cm"]:
     all_classes = np.array(dataset.classes)
@@ -148,24 +159,29 @@ if args.plot in ["all", "cm"]:
     plt.figure(figsize=(12, 12))
     plt.imshow(confusion_matrix, cmap="Blues", interpolation="nearest")
     middle = (np.min(confusion_matrix) + np.max(confusion_matrix)) / 2
-    for i in range(len(all_classes)):
-        for j in range(len(all_classes)):
-            if confusion_matrix[i, j] == 0:
-                continue
-            else:
-                text = f"{confusion_matrix[i, j]:.1e}"
-                color = "white" if confusion_matrix[i, j] > middle else "black"
-                # The cmap is Blues so the text will be white if the background is dark
-                plt.text(j, i, text , ha="center", va="center", color=color)
+
+    ###
+    if len(all_classes) < 15: # don't show text if there are too many classes
+        for i in range(len(all_classes)):
+            for j in range(len(all_classes)):
+                if confusion_matrix[i, j] == 0:
+                    continue
+                else:
+                    text = f"{confusion_matrix[i, j]:.1e}"
+                    color = "white" if confusion_matrix[i, j] > middle else "black"
+                    # The cmap is Blues so the text will be white if the background is dark
+                    plt.text(j, i, text , ha="center", va="center", color=color,)
+    ###
+
     plt.xticks(np.arange(len(all_classes)), all_classes, rotation=90)
     plt.yticks(np.arange(len(all_classes)), all_classes)
     plt.xlabel("True")
     plt.ylabel("Predicted")
     plt.colorbar()
     plt.tight_layout()
-    plt.title(f"Confusion matrix (Accuracy: {acc:.2f}%)")
+    plt.title(f"Confusion matrix (top{args.topk} accuracy: {acc:.2f}%) (ds: {ds_type})")
     
-    plt.savefig(f"last_confusion_matrix_{ds_type.lower()}.png")
+    plt.savefig(f"figs/last_confusion_matrix_{ds_type.lower()}_{args.topk}.png")
     import datetime
     date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     plt.savefig(f"temp/confusion_matrix_{date}.png")

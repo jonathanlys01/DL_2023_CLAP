@@ -19,13 +19,23 @@ To run the script, you need to specify the following arguments :
 - ```--limit``` (or ```-l```) : the number of samples to use. (default : ```-1```, which means all the samples)
 - ```--plot``` (or ```-p```) : what to plot. Possible values are ```no```, ```cm```, ```audio``` and ```all```. (default : ```no```)
 - ```--model``` (or ```-m```) : the model to use. Possible values are ```default```, ```general``` and ```music```. ("laion/clap-htsat-unfused" for general and "laion/larger_clap_music" for music). Default is will automatically choose the model depending on the dataset. (default : ```default```)
+- ```--topk``` (or ```-k```) : the number of top classes to use for the accuracy and the confusion matrix. (default : ```1``` i.e. argmax of similarity) 
 -  ```--verbose``` (or ```-v```) : whether to print the progress or not. (default : ```False```)
+
+### the ```sound_search.py``` script
+The ```sound_search.py``` script allows to search for a sound in a given dataset (or all the datasets) from a text query.
+
+To run the script, you need to specify the following arguments :
+- ```--dataset``` (or ```-d```) : the dataset to use. Possible values are ```esc50```, ```urbansound8k``` and ```fma``` or ```all```. (shortcuts : ```e```, ```u```, ```f``` and ```a```)
+- ```--query``` (or ```-q```) : the query to search for.
+- ```--limit``` (or ```-l```) : the number of samples to use. (default : ```-1```, which means all the samples)
+- ```--model``` (or ```-m```) : the model to use. Possible values are ```general``` and ```music```. ("laion/clap-htsat-unfused" for general and "laion/larger_clap_music" for music).(default : ```general```)
 
 # Experiments
 ## Last audio processed
 Image of the last audio processed by the model.
 
-<img src="last_audio.png" width="80%" alt="last audio">
+<img src="figs/last_audio.png" width="80%" alt="last audio">
 
 ## A few experiments results on the ESC-50 dataset
 
@@ -33,13 +43,13 @@ Running the ```main.py``` script over the whole ESC-50 dataset on a GTX1060, con
 
 ### Confusion matrix of the model over the ESC-50 dataset (raw labels)
 
-<img src="confusion_matrix_old.png" width="100%" alt="Confusion matrix">
+<img src="figs/confusion_matrix_old.png" width="100%" alt="Confusion matrix">
 
 ### Confusion matrix of the model over the ESC-50 dataset (augmented labels)
 
 We also tried to augment the labels of the ESC-50 dataset, by turning words into full sentences. For example, the label ```dog``` becomes ```A dog is barking```. The idea is to give more context to the model, and to make it learn more about the meaning of the sounds.
 
-<img src="confusion_matrix_new.png" width="100%" alt="Confusion matrix">
+<img src="figs/confusion_matrix_new.png" width="100%" alt="Confusion matrix">
 
 We gained more than 10% of accuracy, and the confusion matrix looks better.
 
@@ -47,6 +57,10 @@ We gained more than 10% of accuracy, and the confusion matrix looks better.
 
 On 2000 samples of the UrbanSound8K dataset, the model takes about 35 minutes to run on a GTX1060.
 
-### Confusion matrix of the model over the UrbanSound8K dataset (augmented labels)
+### Confusion matrix of the model over the UrbanSound8K dataset (2000 samples, augmented labels, top 1 accuracy)
 
-<img src="last_confusion_matrix_urbansound8k.png" width="100%" alt="Confusion matrix">
+<img src="figs/last_confusion_matrix_urbansound8k.png" width="100%" alt="Confusion matrix">
+
+### Confusion matrix of the model over the UrbanSound8K dataset (2000 samples, augmented labels, top 3 accuracy)
+
+<img src="figs/last_confusion_matrix_urbansound8k_3.png" width="100%" alt="Confusion matrix">

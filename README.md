@@ -9,6 +9,7 @@ We use the following datasets :
 - [ESC-50](https://www.karolpiczak.com/papers/Piczak2015-ESC-Dataset.pdf) : 50 classes of environmental sounds, 2000 samples, 5 seconds each.
 - [UrbanSound8K](https://urbansounddataset.weebly.com/urbansound8k.html) : 10 classes of urban sounds, 8732 samples, 4 seconds each.
 - [FMA-Small](https://arxiv.org/pdf/1612.01840.pdf) : 8 genres of music, 8000 samples, 30 seconds each.
+- [AudioSet](https://research.google.com/audioset/) : 527 classes of sounds, 2 084 320 samples, 10 seconds each. However, we only use a subset of a few classes (see figure below).
 
 ## Usage
 ### the ```main.py``` script
@@ -33,7 +34,7 @@ To run the script, you need to specify the following arguments :
 
 # Experiments
 ## Last audio processed
-Image of the last audio processed by the model.
+Image of the last audio processed by the model (from the ESC-50 dataset).
 
 <img src="figs/last_audio.png" width="80%" alt="last audio">
 
@@ -64,3 +65,8 @@ On 2000 samples of the UrbanSound8K dataset, the model takes about 35 minutes to
 ### Confusion matrix of the model over the UrbanSound8K dataset (2000 samples, augmented labels, top 3 accuracy)
 
 <img src="figs/last_confusion_matrix_urbansound8k_3.png" width="100%" alt="Confusion matrix">
+
+
+## A few experiments results on the AudioSet dataset
+
+<img src="figs/last_confusion_matrix_audioset_top1.png" width="100%" alt="Confusion matrix">

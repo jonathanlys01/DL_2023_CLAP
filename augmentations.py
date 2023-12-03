@@ -91,9 +91,35 @@ augmentations_fma_chatgpt = {
     "Rock": "Electric guitars wail, drums thunder, as a powerful voice commands attention in a rock anthem.",
 }
 
+augmentations_audioset = {
+    "aircraft": "An aircraft is flying in the sky",
+    "baby" : "A baby is crying",
+    "bird" : "A bird is chirping",
+    "car" : "The motor of a car is running",
+    "cat" : "A cat is meowing",
+    "child" : "A child is laughing",
+    "dog" : "A dog is barking",
+    "drum" : "A drum is being played",
+    "electric guitar" : "An electric guitar is being played",
+    "explosion" : "An explosion is happening",
+    "fart" : "A person is farting",
+    "female speech" : "A woman is speaking",
+    "glass" : "A glass is breaking",
+    "guitar" : "A guitar is being played",
+    "helicopter" : "A helicopter is flying in the sky",
+    "male speech" : "A man is speaking",
+    "pigeon" : "A pigeon is cooing",
+    "ringtone" : "A ringtone is playing",
+    "siren" : "A siren is wailing",
+    "telephone" : "A telephone is ringing",
+    "walk" : "A person is walking",
+    "water" : "Water is dripping",
+}
+
 augmentations = {
     "ESC-50": augmentations_esc,
     "UrbanSound8K": augmentations_urbansound,
-    "FMA": augmentations_fma # augmentations_fma_chatgpt # 
+    "FMA": augmentations_fma, # augmentations_fma_chatgpt # 
+    "Audioset": augmentations_audioset
 }
 

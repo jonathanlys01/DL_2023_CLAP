@@ -4,7 +4,7 @@ Retrieves a music / sound using a text query.
 
 import time
 import argparse
-from dataset import ESC_50, UrbanSound8k, FMA
+from dataset import ESC_50, UrbanSound8k, FMA, Audioset
 import os
 import numpy as np
 import torch
@@ -37,6 +37,10 @@ elif ds_type.lower() in ["urbansound8k", "urbansound", "urban","u"]:
     ds_type = "UrbanSound8K"
     path_to_audio = os.path.join(root, "UrbanSound8K", "audio")
     path_to_annotation = os.path.join(root, "UrbanSound8K", "metadata", "UrbanSound8K.csv")
+
+elif ds_type.lower() in ["audioset", "audio", "as"]:
+    ds_type = "AudioSet"
+    path = os.path.join(root, "audioset")
 
 elif ds_type.lower() in ["all", "a"]:
     ds_type = "all"
@@ -87,6 +91,10 @@ elif ds_type == "FMA":
 elif ds_type == "UrbanSound8K":
     datasets = {
         "UrbanSound8K": UrbanSound8k(path_to_audio, path_to_annotation),
+    }
+elif ds_type == "AudioSet":
+    datasets = {
+        "AudioSet": Audioset(path),
     }
 
 if ds_type == "all":

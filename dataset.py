@@ -131,6 +131,32 @@ class UrbanSound8k(Dataset):
     def open_audio(self,path, sr=None):
         y, sr = librosa.load(path, sr=sr)
         return y, sr
+
+
+class Audioset(Dataset):
+    def __init__(self, path):
+        audios = [os.path.join(path ,os.path.join(class_folder, file)) for class_folder in  os.listdir(path) for file in os.listdir(os.path.join(path, class_folder))]
+        annotations = list(map(
+            lambda x : os.path.basename(os.path.dirname(x)), 
+            audios
+        ))
+
+        indices = [i for i in range(len(audios))]
+        rd.shuffle(indices)
+
+        self.audios = [audios[i] for i in indices]
+        self.annotations = [annotations[i] for i in indices]
+
+        self.classes = sorted(os.listdir(path))
+
+    def __len__(self):
+        return len(self.audios)
+    def __getitem__(self, idx):
+        return {"text": self.annotations[idx], "audio": self.audios[idx]}
+    
+    def open_audio(self,path, sr=None):
+        y, sr = librosa.load(path, sr=sr)
+        return y, sr
         
 
 if __name__ == "__main__":
@@ -148,6 +174,8 @@ if __name__ == "__main__":
         ds_type = "FMA"
     elif ds_type.lower() in ["urbansound8k", "urbansound", "urban","u"]:
         ds_type = "UrbanSound8K"
+    elif ds_type.lower() in ["audioset", "audio", "a"]:
+        ds_type = "AudioSet"
     
     if ds_type == "ESC-50":
         print("Loading ESC-50 dataset")
@@ -168,5 +196,14 @@ if __name__ == "__main__":
         path_to_audio = os.path.join(root, "UrbanSound8K/audio/")
         path_to_annotation = os.path.join(root, "UrbanSound8K/metadata/UrbanSound8K.csv")
         dataset = UrbanSound8k(path_to_audio, path_to_annotation)
-        print("classes",dataset.classes)
+        print("classes", dataset.classes)
+
+    elif ds_type == "AudioSet":
+        print("Loading Audioset dataset")
+        path = os.path.join(root, "audioset")
+        dataset = Audioset(path)
+        print("classes", dataset.classes)
+
+        print("samples", dataset.audios[:3], dataset.annotations[:3])
     
+

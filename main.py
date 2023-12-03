@@ -1,6 +1,6 @@
 import time
 import argparse
-from dataset import ESC_50, UrbanSound8k, FMA
+from dataset import ESC_50, UrbanSound8k, FMA, Audioset
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -40,6 +40,9 @@ elif ds_type.lower() in ["urbansound8k", "urbansound", "urban","u"]:
     ds_type = "UrbanSound8K"
     path_to_audio = os.path.join(root, "UrbanSound8K", "audio")
     path_to_annotation = os.path.join(root, "UrbanSound8K", "metadata", "UrbanSound8K.csv")
+elif ds_type.lower() in ["audioset", "audio", "a"]:
+    ds_type = "Audioset"
+    path = os.path.join(root, "audioset")
     
 else:
     raise ValueError(f"Invalid dataset type, {ds_type}")
@@ -48,7 +51,7 @@ start = time.time()
 
 print("Loading model:", end=" ")
 if args.model == "default":
-    if ds_type in ["ESC-50", "UrbanSound8K"]:
+    if ds_type in ["ESC-50", "UrbanSound8K", "Audioset"]:
         args.model = "general"
     elif ds_type == "FMA":
         args.model = "music"
@@ -72,12 +75,13 @@ elif ds_type == "FMA":
     dataset = FMA(path_to_audio, path_to_annotation)
 elif ds_type == "UrbanSound8K":
     dataset = UrbanSound8k(path_to_audio, path_to_annotation)
+elif ds_type == "Audioset":
+    dataset = Audioset(path)
 print()
 
 preds = []
 limit = len(dataset.audios) if args.limit == -1 else args.limit
 labels = dataset.classes
-
 augmentations = augmentations[ds_type]
 
 assert labels == list(augmentations.keys()), "Labels do not match augmentations"
@@ -181,7 +185,7 @@ if args.plot in ["all", "cm"]:
     plt.tight_layout()
     plt.title(f"Confusion matrix (top{args.topk} accuracy: {acc:.2f}%) (ds: {ds_type})")
     
-    plt.savefig(f"figs/last_confusion_matrix_{ds_type.lower()}_{args.topk}.png")
+    plt.savefig(f"figs/last_confusion_matrix_{ds_type.lower()}_top{args.topk}.png")
     import datetime
     date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     plt.savefig(f"temp/confusion_matrix_{date}.png")

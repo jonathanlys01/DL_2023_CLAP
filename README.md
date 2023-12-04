@@ -54,6 +54,10 @@ We also tried to augment the labels of the ESC-50 dataset, by turning words into
 
 We gained more than 10% of accuracy, and the confusion matrix looks better.
 
+### t-SNE visualization of the ESC-50 dataset + labels
+
+<img src="figs/viz_ESC-50_features.png" width="100%" alt="t-SNE visualization">
+
 ## A few experiments results on the UrbanSound8K dataset
 
 On 2000 samples of the UrbanSound8K dataset, the model takes about 35 minutes to run on a GTX1060.

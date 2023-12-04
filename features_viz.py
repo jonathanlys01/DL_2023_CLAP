@@ -91,22 +91,24 @@ def u():
     return norm*np.cos(theta), norm*np.sin(theta)
 2018787
 
+fontsize = 8
+
 for i, txt in enumerate(classes):
     x, y = u()
     plt.annotate(txt, 
                  xy = (raw_text_features_tsne[i, 0], raw_text_features_tsne[i, 1]),
                  xytext = (raw_text_features_tsne[i, 0] + x, raw_text_features_tsne[i, 1] + y),
                 arrowprops=dict(facecolor='black', arrowstyle="->"),
-                fontsize=12)
+                fontsize=fontsize)
     x, y = u()
     plt.annotate(txt,
                     xy = (aug_text_features_tsne[i, 0], aug_text_features_tsne[i, 1]),
                     xytext = (aug_text_features_tsne[i, 0] + x, aug_text_features_tsne[i, 1] + y),
                     arrowprops=dict(facecolor='black', arrowstyle="->"),
-                    fontsize=12)
+                    fontsize=fontsize)
     
 
-plt.legend()
+plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.title(f"t-SNE visualization of {ds_type} features")
 plt.tight_layout()
 plt.savefig(f"figs/viz_{ds_type}_features.png")

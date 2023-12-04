@@ -85,4 +85,10 @@ The labels are very far from the features, which might explain the poor accuracy
 
 ## A few experiments results on the AudioSet dataset
 
+### Confusion matrix of the model over the AudioSet dataset (~600 samples, augmented labels, top 1 accuracy)
+
 <img src="figs/last_confusion_matrix_audioset_top1.png" width="100%" alt="Confusion matrix">
+
+### t-SNE visualization of the AudioSet dataset + labels
+
+<img src="figs/viz_Audioset_features.png" width="100%" alt="t-SNE visualization">

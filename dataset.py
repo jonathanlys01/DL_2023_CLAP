@@ -204,6 +204,6 @@ if __name__ == "__main__":
         dataset = Audioset(path)
         print("classes", dataset.classes)
 
-        print("samples", dataset.audios[:3], dataset.annotations[:3])
+        print(len(dataset))
     
 

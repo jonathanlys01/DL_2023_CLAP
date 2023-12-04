@@ -86,10 +86,9 @@ plt.scatter(aug_text_features_tsne[:, 0],
             marker="*",c="b", s=100, label="Augmented Text Features", )
 
 def u():
-    norm = 10
+    norm = 3
     theta = np.random.uniform(0, 2*np.pi)
     return norm*np.cos(theta), norm*np.sin(theta)
-2018787
 
 fontsize = 8
 

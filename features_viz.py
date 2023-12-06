@@ -14,7 +14,7 @@ import matplotlib.cm as cm
 
 parser = argparse.ArgumentParser()
 
-help = "Dataset type, one of ESC-50, FMA, UrbanSound8K (short names: e, f, u)"
+help = "Dataset type, one of ESC-50, FMA, UrbanSound8K, AudioSet (short names: e, f, u, a)"
 parser.add_argument("--dataset", "-d", type=str, required=True, help=help)
 
 args = parser.parse_args()
@@ -76,7 +76,7 @@ colors = cm.rainbow(np.linspace(0, 1, len(classes)))
 for i, txt in enumerate(classes):
     plt.scatter(audio_features_tsne[:, 0][audio_labels == i], 
                 audio_features_tsne[:, 1][audio_labels == i],
-                marker="o", color=colors[i], label=txt, alpha=0.3,) 
+                marker="o", color=colors[i], label=txt, alpha=0.7,) 
 
 plt.scatter(raw_text_features_tsne[:, 0], raw_text_features_tsne[:, 1],
             marker="x", c="r", s=100, label="Raw Text Features",)

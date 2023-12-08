@@ -91,6 +91,7 @@ if __name__ == "__main__":
     print("Generating audio features")
     
     audio_labels = []
+    audio_paths = []
     audio_features = []
     
     for i in tqdm(range(len(dataset))):
@@ -114,12 +115,15 @@ if __name__ == "__main__":
             
         audio_features.append(outputs_audio.cpu().numpy().reshape(-1)) # add audio features as a 1D numpy array
         audio_labels.append(dataset.classes.index(label)) # add numerical label
+        audio_paths.append(filename)
         
     audio_features = np.array(audio_features) # shape (n_samples, n_features)
     audio_labels = np.array(audio_labels) # shape (n_samples)
+    audio_paths = np.array(audio_paths) # shape (n_samples)
     
     np.savez_compressed(os.path.join(path_to_features, "audio_features.npz"), 
-                        audio_features=audio_features, audio_labels=audio_labels)
+                        audio_features=audio_features, audio_labels=audio_labels,
+                        audio_paths=audio_paths)
     
     print(f"Audio features saved in {path_to_features}")
     

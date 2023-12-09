@@ -1,13 +1,15 @@
 """
-Allows the visualization of the features of the dataset in a 2D space through t-SNE.
+Allows the visualization of the features of the dataset in a 2D space through t-SNE or PCA.
 """
 
 import os
 import argparse
 import numpy as np
 from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 from sklearn.metrics import pairwise_distances
 from augmentations import augmentations
+from time import time
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -16,8 +18,18 @@ parser = argparse.ArgumentParser()
 
 help = "Dataset type, one of ESC-50, FMA, UrbanSound8K, AudioSet (short names: e, f, u, a)"
 parser.add_argument("--dataset", "-d", type=str, required=True, help=help)
+parser.add_argument("--method", "-m", type=str, default="tsne", help="Method to use for visualization, one of tsne, pca")
 
 args = parser.parse_args()
+
+method = args.method.lower()
+
+if method in ["tsne", "t-sne", "t"]:
+    method = "tsne"
+elif method in ["pca", "p"]:
+    method = "pca"
+else:
+    raise ValueError(f"Invalid method, {method}")
 
 root = "cached_features"
 
@@ -53,21 +65,31 @@ text_file = np.load(os.path.join(path_to_features, "text_features.npz"), allow_p
 raw_text_features = text_file.get("raw_features")
 aug_text_features = text_file.get("augmented_features")
 
-
-
 all_features = np.concatenate([audio_features, raw_text_features, aug_text_features], axis=0)
-cosine_dist = pairwise_distances(all_features, all_features, metric="cosine", n_jobs=-1) 
-########################################################################
 
-tsne = TSNE(n_components=2, metric="precomputed", n_jobs=-1,)
+start = time()
 
-tsne_results = tsne.fit_transform(cosine_dist) # audio_features, raw_text_features, aug_text_features
+if method == "tsne":
+    cosine_dist = pairwise_distances(all_features, all_features, metric="cosine", n_jobs=-1) 
 
-audio_features_tsne = tsne_results[:audio_features.shape[0]]
-raw_text_features_tsne = tsne_results[audio_features.shape[0]:audio_features.shape[0]+raw_text_features.shape[0]]
-aug_text_features_tsne = tsne_results[audio_features.shape[0]+raw_text_features.shape[0]:]
+    tsne = TSNE(n_components=2, metric="precomputed", n_jobs=-1)
 
-########################################################################
+    tsne_results = tsne.fit_transform(cosine_dist)
+
+    audio_features_tsne = tsne_results[:audio_features.shape[0]]
+    raw_text_features_tsne = tsne_results[audio_features.shape[0]:audio_features.shape[0]+raw_text_features.shape[0]]
+    aug_text_features_tsne = tsne_results[audio_features.shape[0]+raw_text_features.shape[0]:]
+
+elif method == "pca":
+    pca = PCA(n_components=2)
+
+    pca_results = pca.fit_transform(all_features)
+
+    audio_features_tsne = pca_results[:audio_features.shape[0]]
+    raw_text_features_tsne = pca_results[audio_features.shape[0]:audio_features.shape[0]+raw_text_features.shape[0]]
+    aug_text_features_tsne = pca_results[audio_features.shape[0]+raw_text_features.shape[0]:]
+
+print(f"Time taken: {time() - start:.2f}s")
 
 plt.figure(figsize=(16, 16))
 
@@ -85,21 +107,27 @@ plt.scatter(aug_text_features_tsne[:, 0],
             aug_text_features_tsne[:, 1],
             marker="*",c="b", s=100, label="Augmented Text Features", )
 
-def u():
-    norm = 3
+def get_norm(features, classes):
+    # heuristic to get the norm of the features
+    n = len(classes)
+
+    return np.sqrt(np.sum(features**2, axis=1).mean() / n)
+    
+
+def u(norm):
     theta = np.random.uniform(0, 2*np.pi)
     return norm*np.cos(theta), norm*np.sin(theta)
 
 fontsize = 8
 
 for i, txt in enumerate(classes):
-    x, y = u()
+    x, y = u(get_norm(audio_features_tsne[audio_labels == i], classes))
     plt.annotate(txt, 
                  xy = (raw_text_features_tsne[i, 0], raw_text_features_tsne[i, 1]),
                  xytext = (raw_text_features_tsne[i, 0] + x, raw_text_features_tsne[i, 1] + y),
                 arrowprops=dict(facecolor='black', arrowstyle="->"),
                 fontsize=fontsize)
-    x, y = u()
+    x, y = u(get_norm(audio_features_tsne[audio_labels == i], classes))
     plt.annotate(txt,
                     xy = (aug_text_features_tsne[i, 0], aug_text_features_tsne[i, 1]),
                     xytext = (aug_text_features_tsne[i, 0] + x, aug_text_features_tsne[i, 1] + y),
@@ -110,7 +138,7 @@ for i, txt in enumerate(classes):
 plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.title(f"t-SNE visualization of {ds_type} features")
 plt.tight_layout()
-plt.savefig(f"figs/viz_{ds_type}_features.png")
+plt.savefig(f"figs/viz_{ds_type}_features_{method}.png", dpi=300)
 
 
 

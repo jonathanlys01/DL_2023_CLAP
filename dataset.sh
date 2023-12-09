@@ -34,7 +34,8 @@ fi
 # FMA Small
 if [ ! -d "fma_small" ]; then
     echo "fma_small not found, downloading..."
-    wget https://os.unil.cloud.switch.ch/fma/fma_small.zip
+    curl -O https://os.unil.cloud.switch.ch/fma/fma_small.zip
+    echo "ade154f733639d52e35e32f5593efe5be76c6d70  fma_small.zip"    | sha1sum -c -
     echo "Unzipping..."
     unzip -q fma_small.zip
     rm fma_small.zip

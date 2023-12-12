@@ -155,7 +155,7 @@ def audio_retrieval(dataset,
     aug_text_features = text_file.get("augmented_features")
 
     # Embed the query
-    query_embedding = embed(query)
+    query_embedding = embed(query, model)
 
     # Compute the scores (cosine similarity)
 
@@ -191,6 +191,7 @@ def audio_retrieval(dataset,
         L.append(
             (sr, y) # (sample rate, audio), required by gradio
         )
+    print()
 
     a1, a2, a3, a4, a5 = L
 

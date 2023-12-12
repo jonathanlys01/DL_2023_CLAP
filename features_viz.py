@@ -138,7 +138,7 @@ for i, txt in enumerate(classes):
 plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.title(f"t-SNE visualization of {ds_type} features")
 plt.tight_layout()
-plt.savefig(f"figs/viz_{ds_type}_features_{method}.png", dpi=300)
+plt.savefig(f"figs/viz_{ds_type}_features_{args.model}_{method}.png", dpi=300)
 
 
 

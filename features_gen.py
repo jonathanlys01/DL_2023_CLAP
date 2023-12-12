@@ -83,7 +83,7 @@ if __name__ == "__main__":
         dataset = Audioset(path)
     print()
     
-    path_to_features = os.path.join("cached_features", ds_type)
+    path_to_features = os.path.join("cached_features", ds_type, args.model)
 
     if not os.path.exists(path_to_features):
         os.makedirs(path_to_features)

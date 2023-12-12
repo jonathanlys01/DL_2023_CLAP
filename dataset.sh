@@ -47,7 +47,8 @@ fi
 # FMA Metadata
 if [ ! -d "fma_metadata" ]; then
     echo "fma_metadata not found, downloading..."
-    wget https://os.unil.cloud.switch.ch/fma/fma_metadata.zip
+    curl -O https://os.unil.cloud.switch.ch/fma/fma_metadata.zip
+    echo "f0df49ffe5f2a6008d7dc83c6915b31835dfe733  fma_metadata.zip" | sha1sum -c -
     echo "Unzipping..."
     unzip -q fma_metadata.zip
     rm fma_metadata.zip

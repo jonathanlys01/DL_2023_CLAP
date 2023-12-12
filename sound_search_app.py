@@ -17,30 +17,40 @@ import soundfile as sf
 # Chose the model
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--model", "-m", type=str, choices=["music", "general",], default="general", help="Model type, default is general")
 parser.add_argument("--share", "-s", type=argparse.BooleanOptionalAction, default=False, help="Share the app")
 
 args = parser.parse_args()
 
 share = args.share
 
-if args.model == "general":
-    cpt = "laion/clap-htsat-unfused"
-elif args.model == "music":
-    cpt = "laion/larger_clap_music"
-else:
-    raise NotImplementedError(f"Model {args.model} not implemented")
 
-# Load the model
+# Load the models
 
 start = time.time()
 
-processor = ClapProcessor.from_pretrained(cpt)
-model = ClapModel.from_pretrained(cpt).to("cuda")
+cpt1 = "laion/clap-htsat-unfused"
+cpt2 = "laion/larger_clap_music"
 
-print(f"Model loaded in {time.time() - start:.2f} seconds")
+processor_general = ClapProcessor.from_pretrained(cpt1)
+model_general = ClapModel.from_pretrained(cpt1).to("cuda")
 
-def embed(text):
+processor_music = ClapProcessor.from_pretrained(cpt2)
+model_music = ClapModel.from_pretrained(cpt2).to("cuda")
+
+model_general.eval()
+model_music.eval()
+
+print(f"Models loaded in {time.time() - start:.2f} seconds")
+
+def embed(text, model):
+    if model == "general":
+        processor = processor_general
+        model = model_general
+    elif model == "music":
+        processor = processor_music
+        model = model_music
+    else:
+        raise ValueError(f"Invalid model, {model}")
     texts = [text]
     inputs_text = processor(text=texts, return_tensors="pt", padding=True)
 
@@ -123,18 +133,24 @@ def background_task(audio_features, raw_text_features, aug_text_features, query_
 
 root = "cached_features"
 
-def audio_retrieval(dataset, query, viz):
+def audio_retrieval(dataset, 
+                    model,
+                    query, viz):
 
     classes = list(augmentations[dataset].keys())
 
     # Load the features
 
-    audio_file = np.load(os.path.join(root, dataset, "audio_features.npz"), allow_pickle=True)
+    audio_file = np.load(os.path.join(root, dataset, 
+                                      model,
+                                      "audio_features.npz"), allow_pickle=True)
     audio_features = audio_file.get("audio_features")
     audio_labels = audio_file.get("audio_labels")
     audio_paths = audio_file.get("audio_paths")
 
-    text_file = np.load(os.path.join(root, dataset, "text_features.npz"), allow_pickle=True)
+    text_file = np.load(os.path.join(root, dataset,
+                                     model,
+                                     "text_features.npz"), allow_pickle=True)
     raw_text_features = text_file.get("raw_features")
     aug_text_features = text_file.get("augmented_features")
 
@@ -199,10 +215,11 @@ demo = gr.Interface(
     audio_retrieval,
     [
         gr.Radio(["ESC-50", "UrbanSound8K", "FMA", "Audioset"], label="Dataset", info="Choose the dataset"),
+        gr.Radio(["general", "music"], label="Model", info="Choose the model"),
         gr.Textbox(label="Text"),
         gr.Radio(["None","pca", "tsne"], label="Visualization", info="Visualization method (background task)",value="None"),
     ],
-    [   gr.Label(num_top_classes=3, label="Cosine similarity ranking"),
+    [   gr.Label(num_top_classes=3, label="Cosine similarity ranking (top 3)"),
         gr.Audio(label="Audio 1"),
         gr.Audio(label="Audio 2"),
         gr.Audio(label="Audio 3"),

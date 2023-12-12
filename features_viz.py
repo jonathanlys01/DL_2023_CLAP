@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 help = "Dataset type, one of ESC-50, FMA, UrbanSound8K, AudioSet (short names: e, f, u, a)"
 parser.add_argument("--dataset", "-d", type=str, required=True, help=help)
 parser.add_argument("--method", "-m", type=str, default="tsne", help="Method to use for visualization, one of tsne, pca")
-
+parser.add_argument("--model", "-m", type=str, choices=["music", "general"], default="general", help="Model type, default is general")
 args = parser.parse_args()
 
 method = args.method.lower()
@@ -49,7 +49,7 @@ else:
 
 classes = list(augmentations[ds_type].keys())
 
-path_to_features = os.path.join(root, ds_type)
+path_to_features = os.path.join(root, ds_type, args.model)
 assert os.path.exists(path_to_features), f"Path does not exist: {path_to_features}, please generate features first."
 
 print("Loading from:", path_to_features)  

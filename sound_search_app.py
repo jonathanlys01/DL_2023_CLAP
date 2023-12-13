@@ -159,22 +159,26 @@ def audio_retrieval(dataset,
 
     # Compute the scores (cosine similarity)
 
-    scores = pairwise_distances(query_embedding, audio_features, metric="cosine")
+    distances = pairwise_distances(query_embedding, audio_features, metric="cosine", n_jobs=-1)[0]
 
-    ranks = np.argsort(scores)[0]
+    scores = 1 - distances # distance to similarity
+
+
+    ranks = np.argsort(scores)[::-1] # high is good
 
     # Get the top results
 
-
-    s1,s2,s3, s4, s5 = [
-        f"#{5-j} : {classes[i]}" for j, i in enumerate(audio_labels[ranks[:5]])]
+    temp = [audio_labels[i] for i in ranks[:5]]
+    temp = [classes[i] for i in temp]
+    temp = [f"#{i+1}: {j}" for i, j in enumerate(temp)]
+    s1,s2,s3, s4, s5 = temp
 
     displayed_scores = {
-        s1: scores[0][ranks[0]],
-        s2: scores[0][ranks[1]],
-        s3: scores[0][ranks[2]],
-        s4: scores[0][ranks[3]],
-        s5: scores[0][ranks[4]],
+        s1: scores[ranks[0]],
+        s2: scores[ranks[1]],
+        s3: scores[ranks[2]],
+        s4: scores[ranks[3]],
+        s5: scores[ranks[4]],
     }
 
     paths = [audio_paths[i] for i in ranks[:5]]

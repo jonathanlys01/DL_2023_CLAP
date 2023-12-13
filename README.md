@@ -61,9 +61,9 @@ On 2000 samples of the UrbanSound8K dataset, the model takes about 35 minutes to
 The accuracy on the FMA-Small dataset is very low, we think this might be related to poor labels. We tried to augment the labels, but it didn't improve the accuracy by much.
 
 ### t-SNE visualization of the FMA-Small dataset + labels
-<img src="figs/viz_FMA_features.png" width="100%" alt="t-SNE visualization">
+<img src="figs/viz_FMA_features_general_tsne.png" width="100%" alt="t-SNE visualization">
 
-The labels are very far from the features, which might explain the poor accuracy.
+There are some clusters, but the labels are not very accurate. It is however suitable for sound retrieval.
 
 ## A few experiments results on the AudioSet dataset
 

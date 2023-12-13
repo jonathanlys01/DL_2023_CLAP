@@ -18,11 +18,11 @@ parser = argparse.ArgumentParser()
 
 help = "Dataset type, one of ESC-50, FMA, UrbanSound8K, AudioSet (short names: e, f, u, a)"
 parser.add_argument("--dataset", "-d", type=str, required=True, help=help)
-parser.add_argument("--method", "-m", type=str, default="tsne", help="Method to use for visualization, one of tsne, pca")
+parser.add_argument("--type", "-t", type=str, default="tsne", help="Method to use for visualization, one of tsne, pca")
 parser.add_argument("--model", "-m", type=str, choices=["music", "general"], default="general", help="Model type, default is general")
 args = parser.parse_args()
 
-method = args.method.lower()
+method = args.type
 
 if method in ["tsne", "t-sne", "t"]:
     method = "tsne"
@@ -30,7 +30,7 @@ elif method in ["pca", "p"]:
     method = "pca"
 else:
     raise ValueError(f"Invalid method, {method}")
-
+print("Using", method)
 root = "cached_features"
 
 ds_type = args.dataset

@@ -224,7 +224,7 @@ demo = gr.Interface(
         gr.Textbox(label="Text"),
         gr.Radio(["None","pca", "tsne"], label="Visualization", info="Visualization method (background task)",value="None"),
     ],
-    [   gr.Label(num_top_classes=3, label="Cosine similarity ranking (top 3)"),
+    [   gr.Label(num_top_classes=5, label="Cosine similarity ranking (top 3)"),
         gr.Audio(label="Audio 1"),
         gr.Audio(label="Audio 2"),
         gr.Audio(label="Audio 3"),

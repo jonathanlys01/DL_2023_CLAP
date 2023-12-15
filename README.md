@@ -1,5 +1,7 @@
-# DL_2023_CLAP
+# [<img src="https://img.shields.io/badge/arXiv:2211.06687-gray?logo=arxiv&color=%23B31B1B" width="25%" alt="ArXiv">](https://arxiv.org/abs/2211.06687) CLAP (Contrastive Language-Audio Pretraining) 
 Experiments on the CLAP model for the DL course at IMTA (2023-2024)
+
+
 
 ## Installation
 To download all the datasets, run the ```dataset.sh``` script.
